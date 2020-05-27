@@ -1,28 +1,36 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <Header></Header>
+    <!-- 一级路由显示区域 -->
+    <router-view></router-view>
+    <Footer v-if="!$route.meta.isFooterHide"></Footer>
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
+<script type="text/ecmascript-6">
+// import Header from "./components/Header";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { getBaseCategoryList } from "@/api";
 export default {
-  name: 'App',
+  name: "App",
+  data() {
+    return {};
+  },
+  mounted() {
+    this.$store.dispatch("getBaseCategoryListToState");
+  },
   components: {
-    HelloWorld
+    Header,
+    Footer
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang='less' scoped>
+div {
+  h1 {
+    color: red;
+  }
 }
 </style>
