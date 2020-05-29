@@ -31,9 +31,15 @@
             <span class="price">{{item.skuPrice}}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" v-model="item.skuNum" class="itxt" />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a href="javascript:void(0)" class="mins" @click="changeItemNumOne(item,'-')">-</a>
+            <input
+              autocomplete="off"
+              type="text"
+              :value="item.skuNum"
+              class="itxt"
+              @change="changeItemNum(item,$event.target.value)"
+            />
+            <a href="javascript:void(0)" @click="changeItemNumOne(item,'+')" class="plus">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{item.skuNum * item.skuPrice}}</span>
@@ -97,6 +103,52 @@ export default {
     this.$store.dispatch("getCartList");
   },
   methods: {
+    // 利用加减按钮修改商品数量
+    changeItemNumOne(item, flag) {
+      const { skuId, skuNum } = item;
+      let number = flag === "+" ? 1 : -1;
+      let obj = {
+        skuId: skuId,
+        skuNum: number
+      };
+      if (skuNum === 1 && flag === "-") {
+        alert("将会删除此商品");
+      } else {
+        this.$store.dispatch("addToCartVuex", obj).then(
+          value => {
+            this.$store.dispatch("getCartList");
+          },
+          error => {
+            alert(error.message);
+          }
+        );
+      }
+    },
+    // 修改商品数量
+    changeItemNum(item, newNum) {
+      // console.log(item, newNum);
+      const { skuId, skuNum } = item;
+      newNum = newNum * 1;
+      // console.log(skuId, skuNum, newNum);
+      if (newNum <= 0) {
+        alert("请确保输入了正确的商品数量");
+        return;
+      } else {
+        let obj = {
+          skuId: skuId,
+          skuNum: newNum - skuNum
+        };
+
+        this.$store.dispatch("addToCartVuex", obj).then(
+          value => {
+            this.$store.dispatch("getCartList");
+          },
+          error => {
+            alert(error.message);
+          }
+        );
+      }
+    },
     // 全选状态切换
     allCheckedCartList() {
       console.log("切换了");
